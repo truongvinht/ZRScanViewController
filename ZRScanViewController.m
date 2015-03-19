@@ -92,6 +92,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated{
     [self stopScanning];
+    [super viewDidDisappear:animated];
 }
 
 /** Method to setup the scanner for capture QR code*/
