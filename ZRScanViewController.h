@@ -46,6 +46,12 @@
 /// alpha for overlay (default = 1.0)
 @property(nonatomic,readwrite) double overlayAlpha;
 
+/// animate overlay after successful scan (default off)
+@property(nonatomic,readwrite) BOOL animateOverlay;
+
+/// animation duration (default 0.1 Sec)
+@property(nonatomic,readwrite) double animationDuration;
+
 /// code which needs to be scanned (default QR)
 @property (nonatomic, strong) NSString *codec;
 

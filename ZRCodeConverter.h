@@ -28,6 +28,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <CoreImage/CoreImage.h>
 
 ///enum type for converting code to image
 typedef enum{

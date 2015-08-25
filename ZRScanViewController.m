@@ -25,6 +25,14 @@
 
 #import "ZRScanViewController.h"
 
+// number of animations
+#ifndef ZRSCANVC_NUMBERS_ANIMATION
+#define ZRSCANVC_NUMBERS_ANIMATION 3
+#endif
+
+//default animation duration
+#define ZRSCANVC_DURATION_ANIMATION 0.1f
+
 @interface ZRScanViewController ()
 
 /// target object to handle results
@@ -56,6 +64,8 @@
         self.recordDelay = 0.0f;
         self.skipInput = YES;
         self.overlayAlpha = 1;
+        self.animateOverlay = NO;
+        self.animationDuration = ZRSCANVC_DURATION_ANIMATION;
         
         self.codec = AVMetadataObjectTypeQRCode;
     }
@@ -206,7 +216,6 @@
                                                                    constant:-10.0]];
         }
     }
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -237,6 +246,17 @@
                 NSString *scannedValue = [((AVMetadataMachineReadableCodeObject *) current) stringValue];
                 [self.delegate zrScanViewController:self didFinishedScanning:scannedValue];
                 
+                //animate overlay
+                if (_animateOverlay&&_imageOverlay) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIView animateWithDuration:_animationDuration animations:^(void) {
+                            for (int i=0; i < ZRSCANVC_NUMBERS_ANIMATION; i++) {
+                                _imageOverlay.alpha = 0;
+                                _imageOverlay.alpha = 1;
+                            }
+                        }];
+                    });
+                }
             }
         }
     }
