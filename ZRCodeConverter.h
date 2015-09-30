@@ -57,8 +57,8 @@ typedef enum{
 /// error resilience level for QR (default:Level L)
 @property(nonatomic,readwrite) ZRCodeErrorResilienceLevel errorLevel;
 
-/// scale value for resize image (default:1.0)
-@property(nonatomic,readwrite) CGFloat scale;
+/// size of the image - width and height (default = 250)
+@property(nonatomic,readwrite) CGFloat size;
 
 /** Method to init a new instance to convert given code
  *  @param code is the input which needs to be converted

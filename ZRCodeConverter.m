@@ -25,6 +25,8 @@
 
 #import "ZRCodeConverter.h"
 
+#define ZRCODE_DEFAULT_SIZE 250.0f
+
 @interface ZRCodeConverter()
 
 /// string which is used for converting
@@ -45,7 +47,7 @@
         //init default settings
         self.encoding = NSUTF8StringEncoding;
         self.errorLevel = ZRCodeErrorResilienceLevelL;
-        self.scale = 1.0f;
+        self.size = ZRCODE_DEFAULT_SIZE;
     }
     return self;
 }
@@ -61,6 +63,8 @@
         
         // Create the filter to convert string to QR image
         CIFilter *qrFilter = [CIFilter filterWithName:@"CIQRCodeGenerator"];
+        
+        [qrFilter setDefaults];
         
         // Set the message content and error-correction level
         [qrFilter setValue:stringData forKey:@"inputMessage"];
@@ -84,8 +88,14 @@
                 break;
         }
         
-        return [self createNonInterpolatedUIImageFromCIImage:qrFilter.outputImage withScale:_scale];
+        return [self createNonInterpolatedUIImageFromCIImage:qrFilter.outputImage withSize:_size];
     }
+    
+    
+    
+    
+    
+    
     return nil;
 }
 
@@ -94,21 +104,24 @@
  *  @param scale is the value for resizing image
  *  @return scaled image
  */
-- (UIImage *)createNonInterpolatedUIImageFromCIImage:(CIImage *)image withScale:(CGFloat)scale
+- (UIImage *)createNonInterpolatedUIImageFromCIImage:(CIImage *)image withSize:(CGFloat)size
 {
     // Render the CIImage into a CGImage
     CGImageRef cgImage = [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent];
     
     // Now we'll rescale using CoreGraphics
-    UIGraphicsBeginImageContext(CGSizeMake(image.extent.size.width * scale, image.extent.size.width * scale));
+    UIGraphicsBeginImageContext(CGSizeMake(size, size));
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     // We don't want to interpolate (since we've got a pixel-correct image)
     CGContextSetInterpolationQuality(context, kCGInterpolationNone);
     CGContextDrawImage(context, CGContextGetClipBoundingBox(context), cgImage);
+    CGContextRotateCTM(context, 1.5707964);
     
     // Get the image out
     UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    scaledImage = [UIImage imageWithCGImage:cgImage scale:size orientation:UIImageOrientationUp];
     
     // Tidy up
     UIGraphicsEndImageContext();
